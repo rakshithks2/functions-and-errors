@@ -1,0 +1,39 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract ProductFactory {
+    uint public totalProducts;
+    uint public productionRate;
+    uint public totalCost;
+
+    event ProductProduced(uint indexed quantity);
+    event ProductionRateAdjusted(uint indexed rate);
+    event TotalCostCalculated(uint totalCost);
+
+    // Function using require statement to ensure valid production rate
+    function setProductionRate(uint rate) public {
+        require(rate > 10, "Production rate must be greater than 10");
+        productionRate = rate;
+        emit ProductionRateAdjusted(rate);
+    }
+
+    // Function using assert statement to ensure valid total product quantity
+    function produce(uint quantity) public {
+        assert(quantity > 10);
+        totalProducts += quantity;
+        emit ProductProduced(quantity);
+    }
+
+    // Function to calculate the total cost based on production rate and return the cost
+    function calculateTotalCost() public returns (uint) {
+        if (productionRate == 0) {
+            revert("Production rate not set. Set production rate before calculating total cost");
+        }
+
+        // Assume a cost of 5 units per product for simplicity
+        totalCost = totalProducts * 5 / productionRate;
+        emit TotalCostCalculated(totalCost);
+
+        return totalCost;
+    }
+}
